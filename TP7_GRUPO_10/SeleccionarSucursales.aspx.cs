@@ -15,7 +15,7 @@ namespace TP7_GRUPO_10
         GestionDataSource objDataSource = new GestionDataSource();
         protected void Page_Load(object sender, EventArgs e)
         {         
-            //PUNTO
+            //PUNTO 4
             if (!IsPostBack)
             {
                 Session["ProvinciaID"] = null;
@@ -29,7 +29,7 @@ namespace TP7_GRUPO_10
 
         protected void btnSeleccionar_Command(object sender, CommandEventArgs e)
         {
-            //PUNTO 5
+            //PUNTO 7
             string idSucursal;
             string nombre;
             string descripcion;
@@ -39,7 +39,7 @@ namespace TP7_GRUPO_10
                 Session["Tabla"] = objTabla.CrearTabla();
             }         
 
-            //PUNTO 6
+            //PUNTO 8
             //Verifica si el comando es "EventoSeleccionar" y guarda el id que contiene en el argumento     
             if (e.CommandName == "EventoSeleccionar")
             {
@@ -56,7 +56,7 @@ namespace TP7_GRUPO_10
                         nombre = ((Label)item.FindControl("NombreSucursalLabel")).Text; //Guarda nombre y descripcion 
                         descripcion = ((Label)item.FindControl("DescripcionSucursalLabel")).Text;
 
-                        //PUNTO 7
+                        //PUNTO 9
                         //Verificia si la sucursal ya esta en la tabla
                         bool flag_SucursalRepetida = false;
                         DataTable auxTabla = (DataTable)Session["Tabla"];
@@ -68,7 +68,7 @@ namespace TP7_GRUPO_10
                                 break;
                             }
                         }
-                        //PUNTO 8
+                        //PUNTO 10
                         //Agrega la fila a la tabla                  
                         if (!flag_SucursalRepetida)
                         {
@@ -84,7 +84,7 @@ namespace TP7_GRUPO_10
             }
         }
 
-        //PUNTO 9
+        //PUNTO 11
         protected void btnProvincia_Command(object sender, CommandEventArgs e)
         {
             string idProvincia;
@@ -97,8 +97,8 @@ namespace TP7_GRUPO_10
                 objDataSource.FiltrarPorProvincia(SqlDataSource1, idProvincia);          
             }
         }
-
-        //PUNTO 10
+        
+        //PARTE DEL PUNTO 5
          protected void btnBuscar_Click(object sender, EventArgs e)
          {
             objDataSource.BuscarSucursal(txtBuscarSucursal, SqlDataSource1, lvSucursales);

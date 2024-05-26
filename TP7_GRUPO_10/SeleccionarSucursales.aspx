@@ -217,7 +217,6 @@
 
         </div>
         <asp:SqlDataSource ID="SqlDataSource2" runat="server" ConnectionString="<%$ ConnectionStrings:BDSucursalesConnectionString %>" SelectCommand="SELECT [Id_Provincia], [DescripcionProvincia] FROM [Provincia]"></asp:SqlDataSource>
-        <asp:Label ID="Label1" runat="server"></asp:Label>
     </form>
 </body>
 </html>
