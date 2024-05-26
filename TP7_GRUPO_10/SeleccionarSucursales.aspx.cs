@@ -12,54 +12,51 @@ namespace TP7_GRUPO_10
     public partial class SeleccionarSucursales : System.Web.UI.Page
     {
         Tabla objTabla = new Tabla();
-        AccesoDatos ObjDatos = new AccesoDatos();
-
+        GestionDataSource objDataSource = new GestionDataSource();
         protected void Page_Load(object sender, EventArgs e)
         {         
+            //PUNTO
             if (!IsPostBack)
             {
                 Session["ProvinciaID"] = null;
             }
             else if (Session["ProvinciaID"] != null)
             {
-                string ID = Session["ProvinciaID"].ToString();
+                string ID = Session["ProvinciaID"].ToString();               
                 SqlDataSource1.SelectCommand = $"SELECT[Id_Sucursal], [NombreSucursal], [DescripcionSucursal], [URL_Imagen_Sucursal] FROM [Sucursal] WHERE [Id_ProvinciaSucursal] = {ID}";
-                label.Text = Session["ProvinciaID"].ToString();
-            } 
-            
+            }         
         }
 
         protected void btnSeleccionar_Command(object sender, CommandEventArgs e)
         {
+            //PUNTO 5
             string idSucursal;
             string nombre;
             string descripcion;
 
-            //Crea la variable session, crea y guarda la tabla si no existe
-            if (Session["Tabla"] == null)
+            if (Session["Tabla"] == null) //Crea la variable session, crea y guarda la tabla si no existe
             {
                 Session["Tabla"] = objTabla.CrearTabla();
             }         
 
+            //PUNTO 6
             //Verifica si el comando es "EventoSeleccionar" y guarda el id que contiene en el argumento     
             if (e.CommandName == "EventoSeleccionar")
             {
-                //obtiene el id
-                idSucursal = e.CommandArgument.ToString();              
+                idSucursal = e.CommandArgument.ToString();  //obtiene el id            
 
-                //Recorre los items del listview
-                foreach (ListViewItem item in lvSucursales.Items)
+                foreach (ListViewItem item in lvSucursales.Items)  //Recorre los items del listview
                 {
                     //Obtener los datos del boton "Seleccionar" dentro del listview
                     Button boton = (Button)item.FindControl("btnSeleccionar");
 
                     //Busca coincidencia con el valor del boton y el auxid
                     if (boton != null && boton.CommandArgument == idSucursal)
-                    {
-                        //Guarda nombre y descripcion                      
-                        nombre = ((Label)item.FindControl("NombreSucursalLabel")).Text;
+                    {                     
+                        nombre = ((Label)item.FindControl("NombreSucursalLabel")).Text; //Guarda nombre y descripcion 
                         descripcion = ((Label)item.FindControl("DescripcionSucursalLabel")).Text;
 
+                        //PUNTO 7
                         //Verificia si la sucursal ya esta en la tabla
                         bool flag_SucursalRepetida = false;
                         DataTable auxTabla = (DataTable)Session["Tabla"];
@@ -71,6 +68,7 @@ namespace TP7_GRUPO_10
                                 break;
                             }
                         }
+                        //PUNTO 8
                         //Agrega la fila a la tabla                  
                         if (!flag_SucursalRepetida)
                         {
@@ -86,40 +84,24 @@ namespace TP7_GRUPO_10
             }
         }
 
+        //PUNTO 9
         protected void btnProvincia_Command(object sender, CommandEventArgs e)
         {
             string idProvincia;
             if(e.CommandName == "e_FiltrarPorProvincia")
             {             
-                //Obtiene el id de la provincia seleccionada
-                idProvincia = e.CommandArgument.ToString();
+                idProvincia = e.CommandArgument.ToString(); //Obtiene el id de la provincia seleccionada
                 Session["ProvinciaID"] = idProvincia;
 
                 //Configura el comando SQL del SqlDataSource del listview para filtrar las sucursales por provincia
-                SqlDataSource1.SelectCommand = "select Id_Sucursal, NombreSucursal, DescripcionSucursal, Id_ProvinciaSucursal, URL_Imagen_Sucursal from Sucursal where Id_ProvinciaSucursal = @Id_Provincia";              
-                SqlDataSource1.SelectParameters.Clear(); // Limpia los parametros previamente definidos
-                SqlDataSource1.SelectParameters.Add("Id_Provincia", idProvincia);             
+                objDataSource.FiltrarPorProvincia(SqlDataSource1, idProvincia);          
             }
         }
 
+        //PUNTO 10
          protected void btnBuscar_Click(object sender, EventArgs e)
          {
-            string nombreSucursal = txtBuscarSucursal.Text;
-
-            if(nombreSucursal == "")
-            {
-                SqlDataSource1.SelectCommand = "SELECT [Id_Sucursal], [NombreSucursal], [DescripcionSucursal], [Id_ProvinciaSucursal], [URL_Imagen_Sucursal] FROM [Sucursal]";
-                lvSucursales.DataSourceID = "SqlDataSource1";
-                lvSucursales.DataBind();              
-            } 
-            else if (nombreSucursal != "")
-            {
-                SqlDataSource1.SelectCommand = "SELECT [Id_Sucursal], [NombreSucursal], [DescripcionSucursal], [Id_ProvinciaSucursal], [URL_Imagen_Sucursal] FROM [Sucursal] WHERE [NombreSucursal] LIKE '%' + @NombreSucursal+ '%' ";
-                SqlDataSource1.SelectParameters.Clear();
-                SqlDataSource1.SelectParameters.Add("NombreSucursal", nombreSucursal);
-                lvSucursales.DataSourceID = "SqlDataSource1";
-                lvSucursales.DataBind();
-            }
+            objDataSource.BuscarSucursal(txtBuscarSucursal, SqlDataSource1, lvSucursales);
          }
     }
 }
